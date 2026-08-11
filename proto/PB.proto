@@ -1,0 +1,66 @@
+syntax = "proto3";
+package proto;
+
+option go_package = "hamrahTask1/proto";
+
+service ChatbotService {
+  rpc Register (RegisterRequest) returns (ReportResponse);
+  rpc Login (LoginRequest) returns (ReportResponse);
+  rpc logout(LogoutRequest) returns (ReportResponse);
+
+  rpc ShowUserList(Empty) returns (UserListResponse);
+  rpc SendMessage(SendMessageRequest) returns (ReportResponse);
+  rpc ShowMessage(ShowMessagesRequest) returns (ShowMessagesResponse);
+
+}
+
+// requests
+message RegisterRequest {
+  string username = 1;
+  string password = 2;
+  int64 age = 3;
+  bool gender = 4;
+}
+
+message LoginRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message SendMessageRequest {
+  string receiverId = 1;
+  string senderId = 2;
+  string message = 3;
+}
+
+message ShowMessagesRequest {
+  string id = 1;
+  string contactId = 2;
+  int64 count = 3;
+}
+
+message LogoutRequest {
+  string id = 1;
+}
+
+message Empty {}
+
+// responses
+message ReportResponse {
+  bool success = 1;
+  string message = 2;
+  string id = 3;
+}
+
+message UserListResponse {
+  repeated string userList = 1;
+  repeated bool status = 2;
+
+}
+
+message ShowMessagesResponse {
+  repeated string message = 1;
+  bool success = 2;
+}
+
+
