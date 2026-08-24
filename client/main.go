@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"context"
 	"fmt"
+	"hamrahTask1/internal/adaptors/handler"
 	"log"
 	"os"
 	"strconv"
@@ -12,8 +13,6 @@ import (
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-
-	"hamrahTask1/proto"
 )
 
 func main() {
@@ -24,7 +23,7 @@ func main() {
 	}
 	defer connection.Close()
 
-	client := proto.NewChatbotServiceClient(connection)
+	client := handler.NewChatbotServiceClient(connection)
 	scanner := bufio.NewScanner(os.Stdin)
 	var currentUserID string = ""
 	var currentPage string = "auth"
@@ -68,7 +67,7 @@ func main() {
 				continue
 			}
 			currentPage = "main"
-			response, err := client.ShowUserList(ctx, &proto.Empty{})
+			response, err := client.ShowUserList(ctx, &handler.Empty{})
 			if err != nil {
 				log.Fatalf("Failed to get user list: %v", err)
 			} else {
@@ -88,7 +87,7 @@ func main() {
 			age, _ := strconv.ParseInt(words[3], 10, 64)
 			gender, _ := strconv.ParseBool(words[4])
 
-			response, err := client.Register(ctx, &proto.RegisterRequest{
+			response, err := client.Register(ctx, &handler.RegisterRequest{
 				Username: words[1],
 				Password: words[2],
 				Age:      age,
@@ -112,7 +111,7 @@ func main() {
 				cancel()
 				continue
 			}
-			response, err := client.Login(ctx, &proto.LoginRequest{
+			response, err := client.Login(ctx, &handler.LoginRequest{
 				Username: words[1],
 				Password: words[2],
 			})
@@ -124,7 +123,7 @@ func main() {
 				currentPage = "main"
 				currentUserID = response.Id
 
-				response, err := client.ShowUserList(ctx, &proto.Empty{})
+				response, err := client.ShowUserList(ctx, &handler.Empty{})
 				if err != nil {
 					log.Fatalf("Failed to get user list: %v", err)
 				} else {
@@ -142,7 +141,7 @@ func main() {
 				cancel()
 				continue
 			}
-			response, _ := client.Logout(ctx, &proto.LogoutRequest{Id: currentUserID})
+			response, _ := client.Logout(ctx, &handler.LogoutRequest{Id: currentUserID})
 			fmt.Printf("-%s\n", response.Message)
 			currentUserID = ""
 			currentPage = "auth"
@@ -168,7 +167,7 @@ func main() {
 
 			contactUsername := words[1]
 
-			response, err := client.ShowMessage(ctx, &proto.ShowMessagesRequest{
+			response, err := client.ShowMessage(ctx, &handler.ShowMessagesRequest{
 				Id:        currentUserID,
 				ContactId: contactUsername,
 				Count:     count,
@@ -191,7 +190,7 @@ func main() {
 		case "/close":
 			run = false
 			if currentUserID != "" {
-				client.Logout(ctx, &proto.LogoutRequest{Id: currentUserID})
+				client.Logout(ctx, &handler.LogoutRequest{Id: currentUserID})
 				currentUserID = ""
 			}
 
@@ -204,7 +203,7 @@ func main() {
 			//message := strings.Join(words[0:], " ")
 			message := input
 
-			_, err := client.SendMessage(ctx, &proto.SendMessageRequest{
+			_, err := client.SendMessage(ctx, &handler.SendMessageRequest{
 				SenderId:   currentUserID,
 				ReceiverId: currentPage,
 				Message:    message,

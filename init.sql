@@ -16,3 +16,10 @@ CREATE TABLE messages (
                           content TEXT NOT NULL,
                           seen BOOLEAN DEFAULT false
 );
+CREATE TABLE app_logs (
+                          id SERIAL PRIMARY KEY,
+                          level VARCHAR(10) NOT NULL,
+                          message TEXT NOT NULL,
+                          error_detail TEXT,
+                          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

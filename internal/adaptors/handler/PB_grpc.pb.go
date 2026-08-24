@@ -4,10 +4,11 @@
 // - protoc             v7.35.1
 // source: PB.proto
 
-package proto
+package handler
 
 import (
 	context "context"
+
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
