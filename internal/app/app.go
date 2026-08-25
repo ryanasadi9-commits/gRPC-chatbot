@@ -94,3 +94,6 @@ func (a *App) Stop() {
 		a.redis.Close()
 	}
 }
+
+// graceful shutdown
+// career lader entekhab yek zel
